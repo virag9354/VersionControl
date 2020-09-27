@@ -21,14 +21,7 @@ namespace UserMaintenance.Entities
             }
         }
 
-        // Ugyanaz a FullName property kompaktabb formában is írható
-        /*
-        public string FullName
-            => string.Format(
-                "{0} {1}",
-                LastName,
-                FirstName);
-        */
+     
          
     }
 }
