@@ -17,17 +17,25 @@ namespace week06
     public partial class Form1 : Form
     {
         BindingList<RateData> Rates = new BindingList<RateData>();
-
+        BindingList<string> Currencies = new BindingList<string>();
         public Form1()
         {
             InitializeComponent();
+            
+
+            RefreshData();
+
+        }
+
+        private void RefreshData()
+        {
             var mnbService = new MNBArfolyamServiceSoapClient();
 
             var request = new GetExchangeRatesRequestBody()
             {
                 currencyNames = "EUR",
-                startDate = "2020-01-01",
-                endDate = "2020-06-30"
+                startDate = dateTimePicker1.Value.ToString(),
+                endDate = dateTimePicker2.Value.ToString()
             };
 
             var response = mnbService.GetExchangeRates(request);
@@ -41,6 +49,7 @@ namespace week06
             foreach (XmlElement element in xml.DocumentElement)
             {
 
+
                 var rate = new RateData();
                 Rates.Add(rate);
 
@@ -49,6 +58,8 @@ namespace week06
 
                 // Valuta
                 var childElement = (XmlElement)element.ChildNodes[0];
+                if (childElement == null)
+                    continue;
                 rate.Currency = childElement.GetAttribute("curr");
 
                 // Érték
@@ -57,13 +68,7 @@ namespace week06
                 if (unit != 0)
                     rate.Value = value / unit;
             }
-            RefreshData();
 
-        }
-
-        private void RefreshData()
-        {
-            
             chartRateData.DataSource = Rates;
 
             var series = chartRateData.Series[0];
