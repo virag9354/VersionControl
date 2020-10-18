@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
+using week06.MnbServiceReference;
 
 namespace week06
 {
@@ -15,6 +17,9 @@ namespace week06
         public Form1()
         {
             InitializeComponent();
+
+           
+
         }
     }
 }
