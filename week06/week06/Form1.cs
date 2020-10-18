@@ -40,7 +40,7 @@ namespace week06
 
             foreach (XmlElement element in xml.DocumentElement)
             {
-             
+
                 var rate = new RateData();
                 Rates.Add(rate);
 
@@ -57,6 +57,13 @@ namespace week06
                 if (unit != 0)
                     rate.Value = value / unit;
             }
+            RefreshData();
+
+        }
+
+        private void RefreshData()
+        {
+            
             chartRateData.DataSource = Rates;
 
             var series = chartRateData.Series[0];
@@ -72,7 +79,21 @@ namespace week06
             chartArea.AxisX.MajorGrid.Enabled = false;
             chartArea.AxisY.MajorGrid.Enabled = false;
             chartArea.AxisY.IsStartedFromZero = false;
+        }
 
+        private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void dateTimePicker2_ValueChanged(object sender, EventArgs e)
+        {
+            RefreshData();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshData();
         }
     }
 }
