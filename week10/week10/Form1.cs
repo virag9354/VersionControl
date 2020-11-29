@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WorldsHardestGame;
 
 namespace week10
 {
@@ -14,6 +15,11 @@ namespace week10
     {
         GameController gc = new GameController();
         GameArea ga;
+        int populationSize = 100;
+        int nbrOfSteps = 10;
+        int nbrOfStepsIncrement = 10;
+        int generation = 1;
+        Brain winnerBrain = null;
         public Form1()
         {
             InitializeComponent();
@@ -21,6 +27,47 @@ namespace week10
             this.Controls.Add(ga);
             gc.AddPlayer();
             gc.Start(true);
+            gc.GameOver += Gc_GameOver;
+
+            for (int i = 0; i < populationSize; i++)
+            {
+                gc.AddPlayer(nbrOfSteps);
+            }
+            gc.Start();
+            
+        }
+        private void Gc_GameOver(object sender)
+        {
+            var playerList = from p in gc.GetCurrentPlayers()
+                             orderby p.GetFitness() descending
+                             select p;
+            var topPerformers = playerList.Take(populationSize / 2).ToList();
+            generation++;
+            label1.Text = string.Format(
+                "{0}. generáció",
+                generation);
+            gc.ResetCurrentLevel();
+            var winners = from p in topPerformers
+                          where p.IsWinner
+                          select p;
+            if (winners.Count() > 0)
+            {
+                winnerBrain = winners.FirstOrDefault().Brain.Clone();
+                gc.GameOver -= Gc_GameOver;
+                return;
+            }
+            
+            gc.Start();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            gc.ResetCurrentLevel();
+            gc.AddPlayer(winnerBrain.Clone());
+            gc.AddPlayer();
+            ga.Focus();
+            gc.Start(true);
         }
     }
+
 }
